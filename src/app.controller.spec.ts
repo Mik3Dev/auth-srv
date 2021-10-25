@@ -15,8 +15,11 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return App Info', () => {
+      const result = appController.getHello();
+      expect(result.name).toBe('Auth Service');
+      expect(result.version).not.toBeNull();
+      expect(result.datetime).not.toBeNull();
     });
   });
 });
