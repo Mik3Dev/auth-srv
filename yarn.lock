@@ -954,6 +954,14 @@
     "@types/passport" "*"
     "@types/passport-strategy" "*"
 
+"@types/passport-oauth2-client-password@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@types/passport-oauth2-client-password/-/passport-oauth2-client-password-0.1.2.tgz#77c1c1bd7d5611c8e86ad49903b2bd8500631a67"
+  integrity sha512-BPbKhiJiYOy4Zr9QUg6LfWXp1aZ26yS77Aa+CtVO89U/2HUZZo5f/fDRM8+tFYTgOAGsZ9IX/HOfKsfDg6rDxw==
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+
 "@types/passport-strategy@*":
   version "0.2.35"
   resolved "https://registry.yarnpkg.com/@types/passport-strategy/-/passport-strategy-0.2.35.tgz#e52f5212279ea73f02d9b06af67efe9cefce2d0c"
@@ -4270,6 +4278,13 @@ passport-local@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-local/-/passport-local-1.0.0.tgz#1fe63268c92e75606626437e3b906662c15ba6ee"
   integrity sha1-H+YyaMkudWBmJkN+O5BmYsFbpu4=
+  dependencies:
+    passport-strategy "1.x.x"
+
+passport-oauth2-client-password@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/passport-oauth2-client-password/-/passport-oauth2-client-password-0.1.2.tgz#4f378b678b92d16dbbd233a6c706520093e561ba"
+  integrity sha1-TzeLZ4uS0W270jOmxwZSAJPlYbo=
   dependencies:
     passport-strategy "1.x.x"
 

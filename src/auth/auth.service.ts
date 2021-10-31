@@ -18,6 +18,17 @@ export class AuthService {
     return null;
   }
 
+  async ValidateUserByClientId(
+    clientId: string,
+    clientSecret: string,
+  ): Promise<any> {
+    const user = await this.usersService.findOneByClientId(clientId);
+    if (user && user.clientSecret === clientSecret) {
+      return { id: user['id'], username: user.username };
+    }
+    return null;
+  }
+
   async login(user: any) {
     const payload = { username: user.username, sub: user.id };
     return {

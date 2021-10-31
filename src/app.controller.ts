@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { Oauth2ClientPasswordGuard } from './auth/guards/oauth2-client-password.guard';
 
 @Controller()
 export class AppController {
@@ -26,6 +27,12 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
+    return this.authService.login(req.user);
+  }
+
+  @UseGuards(Oauth2ClientPasswordGuard)
+  @Post('auth/token')
+  async oauth2ClientPasswordLogin(@Request() req) {
     return this.authService.login(req.user);
   }
 

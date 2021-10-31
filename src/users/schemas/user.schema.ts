@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 export type UserDocument = User & Document;
 
@@ -11,23 +12,23 @@ export type UserDocument = User & Document;
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
+      delete ret.password;
+      delete ret.clientId;
+      delete ret.clientSecret;
     },
   },
 })
 export class User {
-  @Prop()
-  _id: Types.ObjectId;
-
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
   password: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true })
   clientId: string;
 
   @Prop()
@@ -46,4 +47,17 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
+UserSchema.statics.createClientSecret = async function (
+  userId: string,
+  clientSecretSize = 64,
+) {
+  const clientSecret = crypto.randomBytes(clientSecretSize).toString('hex');
+  return this.findByIdAndUpdate(userId, { clientSecret }, { new: true });
+};
+
 export { UserSchema };
+
+export interface IUserModel extends Model<UserDocument> {
+  id?: string;
+  createClientSecret: (userId: string, clientSecretSize?: number) => any;
+}
