@@ -23,7 +23,7 @@ export class AuthService {
     clientSecret: string,
   ): Promise<any> {
     const user = await this.usersService.findOneByClientId(clientId);
-    if (user && user.clientSecret === clientSecret) {
+    if (user && bcrypt.compareSync(clientSecret, user.clientSecret)) {
       return { id: user['id'], username: user.username };
     }
     return null;
