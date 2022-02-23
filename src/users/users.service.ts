@@ -20,7 +20,7 @@ export class UsersService {
     return await this.userModel.findOne({ email });
   }
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User | undefined> {
     return await this.userModel.findOne({ username });
   }
 
@@ -31,7 +31,7 @@ export class UsersService {
   async register(registerUserDTO: RegisterUserDTO) {
     const { username, email, password } = registerUserDTO;
 
-    const userByUsername = await this.findOne(username);
+    const userByUsername = await this.findByUsername(username);
     if (userByUsername) {
       throw new BadRequestException('Username is already taken');
     }
@@ -41,7 +41,7 @@ export class UsersService {
       throw new BadRequestException('Email is already taken');
     }
 
-    const user = new this.userModel({
+    const user = await this.userModel.create({
       username,
       email,
       password,
@@ -50,13 +50,8 @@ export class UsersService {
           parseInt(this.configService.get<string>('CLIENT_ID_SIZE')) || 32,
         )
         .toString('hex'),
-      clientSecret: crypto
-        .randomBytes(
-          parseInt(this.configService.get<string>('CLIENT_SECRET_SIZE')) || 64,
-        )
-        .toString('hex'),
+      clientSecret: null,
     });
-    await user.save();
     await this.generateClientSecret(user.id);
     return user;
   }
