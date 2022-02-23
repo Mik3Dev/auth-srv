@@ -33,6 +33,7 @@ describe('User Service', () => {
       findOne: jest.fn().mockResolvedValue(mockUser),
       create: jest.fn().mockResolvedValue({ id: '1', ...mockUser }),
       createClientSecret: jest.fn().mockResolvedValue('clientSecret'),
+      findByIdAndUpdate: jest.fn().mockResolvedValue({ id: '1', ...mockUser }),
     };
 
     const moduleRef = await Test.createTestingModule({
@@ -89,6 +90,7 @@ describe('User Service', () => {
   describe('register', () => {
     it('should register a new user', async () => {
       mockUserModel.findOne = jest.fn().mockResolvedValue(null);
+      usersService.generateClientSecret = jest.fn().mockResolvedValue({});
       const user = await usersService.register(mockRegisterUserDto);
       expect(user).toEqual({
         id: '1',
@@ -106,7 +108,7 @@ describe('User Service', () => {
         clientId: expect.any(String),
         clientSecret: null,
       });
-      expect(mockUserModel.createClientSecret).toHaveBeenCalledWith('1');
+      expect(usersService.generateClientSecret).toHaveBeenCalledWith('1');
     });
 
     it('should return bad request exception if the email already exists', async () => {
@@ -134,9 +136,18 @@ describe('User Service', () => {
 
   describe('generateClientSecret', () => {
     it('should generate a client secret', async () => {
+      mockConfigService.get = jest.fn().mockReturnValue(64);
       const clientSecret = await usersService.generateClientSecret('1');
-      expect(clientSecret).toBe('clientSecret');
-      expect(mockUserModel.createClientSecret).toHaveBeenCalledWith('1');
+      expect(clientSecret).toEqual({
+        userId: '1',
+        clientId: mockUser.clientId,
+        clientSecret: expect.any(String),
+      });
+      expect(mockUserModel.findByIdAndUpdate).toHaveBeenCalledWith(
+        '1',
+        { clientSecret: expect.any(String) },
+        { new: true },
+      );
     });
   });
 });
